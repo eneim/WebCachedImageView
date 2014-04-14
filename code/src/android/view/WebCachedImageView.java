@@ -112,7 +112,12 @@ public class WebCachedImageView extends ImageView {
 		if (url != null && cancelPotentialWork(url)) {
 			final BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(this);
 			mBitmapWorkerRef = new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
-			bitmapWorkerTask.execute(url, mCacheMgr, mWidth, mHeight);
+		            // To run multiple asyncTasks in parallel
+		            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+		                bitmapWorkerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, mCacheMgr, mWidth, mHeight);
+		            } else {
+		                bitmapWorkerTask.execute(url, mCacheMgr, mWidth, mHeight);
+		            }
 		}
 	}
 	
